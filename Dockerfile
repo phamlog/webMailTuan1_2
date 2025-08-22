@@ -1,23 +1,17 @@
-# Stage 1: Build bằng Ant
-FROM openjdk:11-jdk-slim AS build
+# Stage 1: Build với Maven
+FROM maven:3.9.6-eclipse-temurin-11 AS build
 
 WORKDIR /app
 COPY . .
-
-# Cài Ant để build WAR
-RUN apt-get update \
-    && apt-get install -y ant \
-    && ant \
-    && rm -rf /var/lib/apt/lists/*
+RUN mvn package -DskipTests
 
 # Stage 2: Deploy lên Tomcat
 FROM tomcat:9.0-jdk11
 
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Copy WAR do Ant sinh ra trong dist/
-COPY --from=build /app/dist/*.war /usr/local/tomcat/webapps/ROOT.war
+# Copy WAR từ target/ sang ROOT.war
+COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
 
 EXPOSE 8080
-
 CMD ["catalina.sh", "run"]
