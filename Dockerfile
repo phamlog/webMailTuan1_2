@@ -1,14 +1,14 @@
-# Base Tomcat
+# Sử dụng Tomcat chính thức
 FROM tomcat:9.0-jdk11
 
-# Xóa các app mặc định của Tomcat
+# Xóa webapp mặc định
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Copy WAR đã build sẵn (đưa vào ROOT.war)
+# Copy WAR đã build sẵn từ repo GitHub
 COPY dist/webMailTuan1Buoi2.war /usr/local/tomcat/webapps/ROOT.war
 
-# Expose cổng 8080 (Render sẽ tự map)
+# Expose cổng (Render tự map)
 EXPOSE 8080
 
-# Khởi chạy Tomcat
+# Chạy Tomcat
 CMD ["catalina.sh", "run"]
