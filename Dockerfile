@@ -1,11 +1,14 @@
 # Stage 1: Build bằng Ant
-FROM openjdk:11 AS build
+FROM openjdk:11-jdk-slim AS build
 
 WORKDIR /app
 COPY . .
 
 # Cài Ant để build WAR
-RUN apt-get update && apt-get install -y ant && ant
+RUN apt-get update \
+    && apt-get install -y ant \
+    && ant \
+    && rm -rf /var/lib/apt/lists/*
 
 # Stage 2: Deploy lên Tomcat
 FROM tomcat:9.0-jdk11
