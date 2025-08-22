@@ -1,17 +1,14 @@
-# Stage 1: Build với Maven
-FROM maven:3.9.6-eclipse-temurin-11 AS build
-
-WORKDIR /app
-COPY . .
-RUN mvn package -DskipTests
-
-# Stage 2: Deploy lên Tomcat
+# Base Tomcat
 FROM tomcat:9.0-jdk11
 
+# Xóa các app mặc định của Tomcat
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Copy WAR từ target/ sang ROOT.war
-COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
+# Copy WAR đã build sẵn (đưa vào ROOT.war)
+COPY dist/webMailTuan1Buoi2.war /usr/local/tomcat/webapps/ROOT.war
 
+# Expose cổng 8080 (Render sẽ tự map)
 EXPOSE 8080
+
+# Khởi chạy Tomcat
 CMD ["catalina.sh", "run"]
